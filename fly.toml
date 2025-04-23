@@ -1,0 +1,26 @@
+# fly.toml app configuration file generated for image-placeholder-crimson-glitter-2118 on 2025-04-23T23:21:32+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'image-placeholder'
+primary_region = 'fra'
+
+[build]
+
+[env]
+  PORT = '8080'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = false
+  min_machines_running = 1
+  max_machines_running = 1
+  processes = ['app']
+
+[[vm]]
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 256

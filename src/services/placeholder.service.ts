@@ -107,7 +107,7 @@ export async function generatePlaceholderImage(params: PlaceholderParams): Promi
       <text
         x="50%"
         y="50%"
-        font-family="Arial"
+        font-family="'Noto Sans', 'Helvetica Neue', Arial, sans-serif"
         font-size="${finalFontSize}px"
         fill="#${fg}"
         text-anchor="middle"
