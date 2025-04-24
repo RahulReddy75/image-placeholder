@@ -85,6 +85,11 @@ Generate placeholder images using query parameters. All parameters are optional 
    http://localhost:3001?width=300&height=200&text=Hello&bold=true&fontSize=40
    ```
 
+6. Different font sizes for lines:
+   ```
+   http://localhost:3001?width=300&height=300&text=Title\\nSubtitle\\nMore%20Text&fontSize=50&secondFontSize=25
+   ```
+
 ### 🎨 Advanced Examples
 
 1. Profile Picture Placeholder:
@@ -166,17 +171,18 @@ Generate placeholder images using query parameters. All parameters are optional 
 
 ### API Parameters
 
-| Parameter | Type    | Description                           | Default         |
-| --------- | ------- | ------------------------------------- | --------------- |
-| width     | number  | Image width in pixels                 | Required        |
-| height    | number  | Image height in pixels                | Required        |
-| bg        | string  | Background color (HEX without #)      | 000000          |
-| fg        | string  | Text color (HEX without #)            | FFFFFF          |
-| text      | string  | Custom text (use \\n for line breaks) | width×height    |
-| vertical  | boolean | Display text vertically               | false           |
-| bold      | boolean | Display text in bold                  | false           |
-| italic    | boolean | Display text in italic                | false           |
-| fontSize  | number  | Custom font size in pixels            | Auto-calculated |
+| Parameter      | Type    | Description                           | Default         |
+| -------------- | ------- | ------------------------------------- | --------------- |
+| width          | number  | Image width in pixels                 | Required        |
+| height         | number  | Image height in pixels                | Required        |
+| bg             | string  | Background color (HEX without #)      | 000000          |
+| fg             | string  | Text color (HEX without #)            | FFFFFF          |
+| text           | string  | Custom text (use \\n for line breaks) | width×height    |
+| vertical       | boolean | Display text vertically               | false           |
+| bold           | boolean | Display text in bold                  | false           |
+| italic         | boolean | Display text in italic                | false           |
+| fontSize       | number  | Custom font size in pixels            | Auto-calculated |
+| secondFontSize | number  | Font size for all lines after the first line | Same as fontSize |
 
 ## 🛠️ Development
 

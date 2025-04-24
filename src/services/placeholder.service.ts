@@ -27,6 +27,7 @@ const QuerySchema = z.object({
     .optional()
     .transform((val) => val === 'true'),
   fontSize: z.string().regex(/^\d+$/).transform(Number).optional(),
+  secondFontSize: z.string().regex(/^\d+$/).transform(Number).optional(),
 });
 
 export interface PlaceholderParams {
@@ -39,6 +40,7 @@ export interface PlaceholderParams {
   bold?: boolean;
   italic?: boolean;
   fontSize?: number;
+  secondFontSize?: number;
 }
 
 function calculateFontSize(
@@ -79,25 +81,49 @@ export async function generatePlaceholderImage(params: PlaceholderParams): Promi
     bold = false,
     italic = false,
     fontSize,
+    secondFontSize,
   } = params;
 
   // Calculate optimal font size
   const finalFontSize = calculateFontSize(text, width, height, fontSize);
   const lines = text.split('\\n');
-  const lineHeight = finalFontSize * 1.2; // Add some spacing between lines
+
+  // Calculate the heights of each line
+  const lineHeights = lines.map((_, index) => {
+    const size = index > 0 && secondFontSize ? secondFontSize : finalFontSize;
+    // Using a smaller multiplier for line height
+    return size * (index === 0 ? 1.0 : 0.8); // Reduced spacing, especially for second line
+  });
 
   // Create tspan elements for each line
   const textElements = lines
-    .map(
-      (line, index) => `
+    .map((line, index) => {
+      // Use secondFontSize for any line after the first (index > 0) if provided
+      const lineSize = index > 0 && secondFontSize ? secondFontSize : finalFontSize;
+
+      // Calculate the dy attribute for vertical positioning
+      let dy;
+      if (index === 0) {
+        // First line: Position at 10% from the top
+        dy = `${height * 0.10}px`;
+      } else {
+        // Calculate spacing dynamically based on font size difference
+        const sizeDifference = finalFontSize / (secondFontSize || finalFontSize);
+        // Find a more balanced spacing - moderate gap that's not too large or small
+        const spacingFactor = sizeDifference > 4 ? 0.3 : 0.4;
+        dy = `${lineHeights[index - 1] * spacingFactor}px`;
+      }
+
+      return `
     <tspan 
       x="50%" 
-      dy="${index === 0 ? -((lines.length - 1) * lineHeight) / 2 : lineHeight}px"
+      dy="${dy}"
       textLength="${width * 0.9}"
       lengthAdjust="spacingAndGlyphs"
+      font-size="${lineSize}px"
     >${line}</tspan>
-  `
-    )
+  `;
+    })
     .join('');
 
   // Create SVG
@@ -108,7 +134,6 @@ export async function generatePlaceholderImage(params: PlaceholderParams): Promi
         x="50%"
         y="50%"
         font-family="'Noto Sans', 'Helvetica Neue', Arial, sans-serif"
-        font-size="${finalFontSize}px"
         fill="#${fg}"
         text-anchor="middle"
         dominant-baseline="middle"
